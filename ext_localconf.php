@@ -32,35 +32,6 @@ defined('TYPO3') || die();
             RecipeController::class => 'helper'
         ]
     );
-
-    // wizards
-    ExtensionManagementUtility::addPageTSConfig(
-        'mod {
-            wizards.newContentElement.wizardItems.plugins {
-                elements {
-                    bokunorecipe {
-                        iconIdentifier = bokunorecipe-plugin-bokunorecipe
-                        title = LLL:EXT:bokunorecipe/Resources/Private/Language/locallang_db.xlf:tx_bokunorecipe_bokunorecipe.name
-                        description = LLL:EXT:bokunorecipe/Resources/Private/Language/locallang_db.xlf:tx_bokunorecipe_bokunorecipe.description
-                        tt_content_defValues {
-                            CType = list
-                            list_type = bokunorecipe_bokunorecipe
-                        }
-                    }
-                    bokunocookinghelper {
-                        iconIdentifier = bokunorecipe-plugin-bokunocookinghelper
-                        title = LLL:EXT:bokunorecipe/Resources/Private/Language/locallang_db.xlf:tx_bokunorecipe_bokunocookinghelper.name
-                        description = LLL:EXT:bokunorecipe/Resources/Private/Language/locallang_db.xlf:tx_bokunorecipe_bokunocookinghelper.description
-                        tt_content_defValues {
-                            CType = list
-                            list_type = bokunorecipe_bokunocookinghelper
-                        }
-                    }
-                }
-                show = *
-            }
-       }'
-    );
 })();
 ## EXTENSION BUILDER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the extension builder
 if (ExtensionManagementUtility::isLoaded('ke_search')) {

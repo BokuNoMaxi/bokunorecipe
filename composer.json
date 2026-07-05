@@ -32,7 +32,7 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "bokunorecipe"
+            "extension-key": "bokunorecipe",
         }
     },
     "config": {
