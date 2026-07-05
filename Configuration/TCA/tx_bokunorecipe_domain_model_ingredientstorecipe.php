@@ -5,6 +5,7 @@ return [
         'label' => 'quantity',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
+        'hideTable' => true,
         'sortby' => 'sorting',
         'versioningWS' => true,
         'languageField' => 'sys_language_uid',
@@ -20,7 +21,16 @@ return [
         'iconfile' => 'EXT:bokunorecipe/Resources/Public/Icons/tx_bokunorecipe_domain_model_ingredientstorecipe.gif'
     ],
     'types' => [
-        '1' => ['showitem' => 'quantity, alternative_measurement, custom_group, ingredient, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, sys_language_uid, l10n_parent, l10n_diffsource, --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, starttime, endtime'],
+        '1' => [
+            'showitem' => '
+            --palette--;;ingredientPalette, custom_group,
+            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language, sys_language_uid, l10n_parent, l10n_diffsource,
+            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access, hidden, starttime, endtime'],
+    ],
+    'palettes' => [
+        'ingredientPalette' => [
+            'showitem' => 'quantity, ingredient,alternative_measurement'
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -140,9 +150,9 @@ return [
                 'minitems' => 0,
                 'maxitems' => 1,
             ],
-            
+
         ],
-    
+
         'recipe' => [
             'config' => [
                 'type' => 'passthrough',

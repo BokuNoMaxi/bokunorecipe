@@ -145,11 +145,10 @@ class RecipeRepository extends Repository
             ->select("*")
             ->from($this::TABLE_CATEGORY)
             ->where(
-                $queryBuilder
-                    ->expr()
-                    ->eq("pid", $queryBuilder->createNamedParameter($pid))
-            )
-            ->andWhere($queryBuilder->expr()->gt("parent", 0));
+                $queryBuilder->expr()->eq("pid", $queryBuilder->createNamedParameter($pid)),
+                $queryBuilder->expr()->gt("parent", 0),
+                $queryBuilder->expr()->eq("tx_extbase_type", $queryBuilder->createNamedParameter('Tx_Bokunorecipe_Category'))
+            );
 
         $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
         return $dataMapper->map(

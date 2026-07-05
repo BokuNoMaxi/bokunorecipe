@@ -28,15 +28,6 @@ plugin.tx_bokunorecipe_bokunorecipe {
 }
 plugin.tx_bokunorecipe_bokunocookinghelper < plugin.tx_bokunorecipe_bokunorecipe
 
-plugin.tx_bokunorecipe_bokunorecipe.persistence.classes {
-	BokuNo\Bokunorecipe\Domain\Model\Category {
-		mapping {
-			recordType = 0
-			tableName = sys_category
-		}
-	}
-}
-
 page {
   includeJSFooter {
     bokunorecipe = EXT:bokunorecipe/Resources/Public/JavaScript/main.js

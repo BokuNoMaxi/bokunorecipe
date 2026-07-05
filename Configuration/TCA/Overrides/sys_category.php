@@ -14,10 +14,8 @@ if (!isset($GLOBALS['TCA']['sys_category']['ctrl']['type'])) {
             'type' => 'select',
             'renderType' => 'selectSingle',
             'items' => [
-                ['', ''],
-                ['Category', 'Tx_Bokunorecipe_Category']
+                ['Systemcategory', ''],
             ],
-            'default' => 'Tx_Bokunorecipe_Category',
             'size' => 1,
             'maxitems' => 1,
         ]
