@@ -71,13 +71,11 @@ class IngredientsController extends ActionController
 
     /**
      * action create
-     *
-     * @return string|object|null|void
      */
-    public function createAction(Ingredients $newIngredients)
+    public function createAction(Ingredients $newIngredients): ResponseInterface
     {
         $this->ingredientsRepository->add($newIngredients);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 
     /**
@@ -94,23 +92,19 @@ class IngredientsController extends ActionController
 
     /**
      * action update
-     *
-     * @return string|object|null|void
      */
-    public function updateAction(Ingredients $ingredients)
+    public function updateAction(Ingredients $ingredients): ResponseInterface
     {
         $this->ingredientsRepository->update($ingredients);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 
     /**
      * action delete
-     *
-     * @return string|object|null|void
      */
-    public function deleteAction(Ingredients $ingredients)
+    public function deleteAction(Ingredients $ingredients): ResponseInterface
     {
         $this->ingredientsRepository->remove($ingredients);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 }

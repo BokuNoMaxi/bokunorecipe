@@ -2,6 +2,7 @@
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use BokuNo\Bokunorecipe\Controller\RecipeController;
 use BokuNo\Bokunorecipe\Controller\IngredientsController;
+use BokuNo\Bokunorecipe\Configuration\KeSearchConfiguration;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3') || die();
@@ -62,17 +63,8 @@ defined('TYPO3') || die();
     );
 })();
 ## EXTENSION BUILDER DEFAULTS END TOKEN - Everything BEFORE this line is overwritten with the defaults of the extension builder
-use BokuNo\Bokunorecipe\Indexer\RecipeIndexer;
-
-$GLOBALS["TYPO3_CONF_VARS"]["EXTCONF"]["ke_search"][
-    "registerIndexerConfiguration"
-][] = RecipeIndexer::class;
-$GLOBALS["TYPO3_CONF_VARS"]["EXTCONF"]["ke_search"]["customIndexer"][] =
-    RecipeIndexer::class;
-
-$GLOBALS["TYPO3_CONF_VARS"]["EXTCONF"]["ke_search"]["fileReferenceTypes"][
-    "tx_bokunorecipe_domain_model_recipe"
-]["table"] = "tx_bokunorecipe_domain_model_recipe";
-$GLOBALS["TYPO3_CONF_VARS"]["EXTCONF"]["ke_search"]["fileReferenceTypes"][
-    "tx_bokunorecipe_domain_model_recipe"
-]["field"] = "images";
+if (ExtensionManagementUtility::isLoaded('ke_search')) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ke_search'] = KeSearchConfiguration::registerIndexers(
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ke_search'] ?? []
+    );
+}

@@ -89,13 +89,11 @@ class RecipeController extends ActionController
 
     /**
      * action create
-     *
-     * @return ResponseInterface
      */
-    public function createAction(Recipe $newRecipe)
+    public function createAction(Recipe $newRecipe): ResponseInterface
     {
         $this->recipeRepository->add($newRecipe);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 
     /**
@@ -110,24 +108,20 @@ class RecipeController extends ActionController
 
     /**
      * action update
-     *
-     * @return string|object|null|void
      */
-    public function updateAction(Recipe $recipe)
+    public function updateAction(Recipe $recipe): ResponseInterface
     {
         $this->recipeRepository->update($recipe);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 
     /**
      * action delete
-     *
-     * @return string|object|null|void
      */
-    public function deleteAction(Recipe $recipe)
+    public function deleteAction(Recipe $recipe): ResponseInterface
     {
         $this->recipeRepository->remove($recipe);
-        $this->redirect("list");
+        return $this->redirect('list');
     }
 
     /**
@@ -160,9 +154,9 @@ class RecipeController extends ActionController
         return $this->htmlResponse();
     }
 
-    private function getCategories()
+    private function getCategories(): array
     {
-        $recipeCategoryUid = $this->settings["recipeCategoryUid"];
+        $recipeCategoryUid = (int)($this->settings['recipeCategoryUid'] ?? 0);
         return $this->recipeRepository->getAllCategoriesFromPid(
             $recipeCategoryUid
         );

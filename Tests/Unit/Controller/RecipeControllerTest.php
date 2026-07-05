@@ -5,19 +5,25 @@ declare(strict_types=1);
 namespace BokuNo\Bokunorecipe\Tests\Unit\Controller;
 
 use BokuNo\Bokunorecipe\Controller\RecipeController;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use BokuNo\Bokunorecipe\Domain\Repository\RecipeRepository;
+use BokuNo\Bokunorecipe\Domain\Model\Category;
 use BokuNo\Bokunorecipe\Domain\Model\Recipe;
+use BokuNo\Bokunorecipe\Domain\Repository\CategoryRepository;
+use BokuNo\Bokunorecipe\Domain\Repository\RecipeRepository;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\TestingFramework\Core\AccessibleObjectInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
-use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Test case
  *
  * @author Markus Ketterer <ketterer.markus@gmx.at>
  */
+#[AllowMockObjectsWithoutExpectations]
 class RecipeControllerTest extends UnitTestCase
 {
     /**
@@ -25,12 +31,18 @@ class RecipeControllerTest extends UnitTestCase
      */
     protected $subject;
 
+    protected RecipeRepository&MockObject $recipeRepository;
+
+    protected CategoryRepository&MockObject $categoryRepository;
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->recipeRepository = $this->createMock(RecipeRepository::class);
+        $this->categoryRepository = $this->createMock(CategoryRepository::class);
         $this->subject = $this->getMockBuilder($this->buildAccessibleProxy(RecipeController::class))
-            ->onlyMethods(['redirect', 'forward', 'addFlashMessage'])
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([$this->recipeRepository, $this->categoryRepository])
+            ->onlyMethods(['htmlResponse', 'redirect'])
             ->getMock();
     }
 
@@ -39,108 +51,96 @@ class RecipeControllerTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
-    public function listActionFetchesAllRecipesFromRepositoryAndAssignsThemToView(): void
+    public function testListActionFetchesAllRecipesFromRepositoryAndAssignsThemToView(): void
     {
-        $allRecipes = $this->getMockBuilder(ObjectStorage::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $recipe = new Recipe();
+        $allRecipes = new ObjectStorage();
+        $allRecipes->attach($recipe);
+        $categories = [new Category()];
+        $response = $this->createMock(ResponseInterface::class);
 
-        $recipeRepository = $this->getMockBuilder(RecipeRepository::class)
-            ->onlyMethods(['findAll'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $recipeRepository->expects(self::once())->method('findAll')->will(self::returnValue($allRecipes));
-        $this->subject->_set('recipeRepository', $recipeRepository);
+        $request = $this->createMock(RequestInterface::class);
+        $request->expects(self::exactly(2))->method('hasArgument')->willReturn(false);
+        $this->subject->_set('request', $request);
+        $this->subject->_set('settings', ['recipeCategoryUid' => 42]);
 
         $view = $this->getMockBuilder(ViewInterface::class)->getMock();
-        $view->expects(self::once())->method('assign')->with('recipes', $allRecipes);
+        $view->expects(self::once())->method('assignMultiple')->with(self::callback(
+            static function (array $assignedValues) use ($categories, $recipe): bool {
+                return $assignedValues['recipes'] === [$recipe]
+                    && $assignedValues['categories'] === $categories
+                    && $assignedValues['selCategories'] === []
+                    && isset($assignedValues['paginator'], $assignedValues['paging'], $assignedValues['pages']);
+            }
+        ));
         $this->subject->_set('view', $view);
 
-        $this->subject->listAction();
+        $this->recipeRepository->expects(self::once())->method('findAll')->willReturn($allRecipes);
+        $this->recipeRepository->expects(self::once())
+            ->method('getAllCategoriesFromPid')
+            ->with(42)
+            ->willReturn($categories);
+        $this->subject->expects(self::once())->method('htmlResponse')->willReturn($response);
+
+        self::assertSame($response, $this->subject->listAction());
     }
 
-    /**
-     * @test
-     */
-    public function showActionAssignsTheGivenRecipeToView(): void
+    public function testShowActionAssignsTheGivenRecipeToView(): void
     {
         $recipe = new Recipe();
-
-        $view = $this->getMockBuilder(ViewInterface::class)->getMock();
-        $this->subject->_set('view', $view);
-        $view->expects(self::once())->method('assign')->with('recipe', $recipe);
-
-        $this->subject->showAction($recipe);
-    }
-
-    /**
-     * @test
-     */
-    public function createActionAddsTheGivenRecipeToRecipeRepository(): void
-    {
-        $recipe = new Recipe();
-
-        $recipeRepository = $this->getMockBuilder(RecipeRepository::class)
-            ->onlyMethods(['add'])
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $recipeRepository->expects(self::once())->method('add')->with($recipe);
-        $this->subject->_set('recipeRepository', $recipeRepository);
-
-        $this->subject->createAction($recipe);
-    }
-
-    /**
-     * @test
-     */
-    public function editActionAssignsTheGivenRecipeToView(): void
-    {
-        $recipe = new Recipe();
+        $response = $this->createMock(ResponseInterface::class);
 
         $view = $this->getMockBuilder(ViewInterface::class)->getMock();
         $this->subject->_set('view', $view);
         $view->expects(self::once())->method('assign')->with('recipe', $recipe);
+        $this->subject->expects(self::once())->method('htmlResponse')->willReturn($response);
 
-        $this->subject->editAction($recipe);
+        self::assertSame($response, $this->subject->showAction($recipe));
     }
 
-    /**
-     * @test
-     */
-    public function updateActionUpdatesTheGivenRecipeInRecipeRepository(): void
+    public function testCreateActionAddsTheGivenRecipeToRecipeRepositoryAndRedirects(): void
     {
         $recipe = new Recipe();
+        $response = $this->createMock(ResponseInterface::class);
 
-        $recipeRepository = $this->getMockBuilder(RecipeRepository::class)
-            ->onlyMethods(['update'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->recipeRepository->expects(self::once())->method('add')->with($recipe);
+        $this->subject->expects(self::once())->method('redirect')->with('list')->willReturn($response);
 
-        $recipeRepository->expects(self::once())->method('update')->with($recipe);
-        $this->subject->_set('recipeRepository', $recipeRepository);
-
-        $this->subject->updateAction($recipe);
+        self::assertSame($response, $this->subject->createAction($recipe));
     }
 
-    /**
-     * @test
-     */
-    public function deleteActionRemovesTheGivenRecipeFromRecipeRepository(): void
+    public function testEditActionAssignsTheGivenRecipeToView(): void
     {
         $recipe = new Recipe();
+        $response = $this->createMock(ResponseInterface::class);
 
-        $recipeRepository = $this->getMockBuilder(RecipeRepository::class)
-            ->onlyMethods(['remove'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $view = $this->getMockBuilder(ViewInterface::class)->getMock();
+        $this->subject->_set('view', $view);
+        $view->expects(self::once())->method('assign')->with('recipe', $recipe);
+        $this->subject->expects(self::once())->method('htmlResponse')->willReturn($response);
 
-        $recipeRepository->expects(self::once())->method('remove')->with($recipe);
-        $this->subject->_set('recipeRepository', $recipeRepository);
+        self::assertSame($response, $this->subject->editAction($recipe));
+    }
 
-        $this->subject->deleteAction($recipe);
+    public function testUpdateActionUpdatesTheGivenRecipeInRecipeRepositoryAndRedirects(): void
+    {
+        $recipe = new Recipe();
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->recipeRepository->expects(self::once())->method('update')->with($recipe);
+        $this->subject->expects(self::once())->method('redirect')->with('list')->willReturn($response);
+
+        self::assertSame($response, $this->subject->updateAction($recipe));
+    }
+
+    public function testDeleteActionRemovesTheGivenRecipeFromRecipeRepositoryAndRedirects(): void
+    {
+        $recipe = new Recipe();
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->recipeRepository->expects(self::once())->method('remove')->with($recipe);
+        $this->subject->expects(self::once())->method('redirect')->with('list')->willReturn($response);
+
+        self::assertSame($response, $this->subject->deleteAction($recipe));
     }
 }

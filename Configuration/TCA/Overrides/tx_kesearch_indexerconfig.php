@@ -1,8 +1,10 @@
 <?php
-// Add you own indexer to the array, use a comma to join more indexers.
 
-use BokuNo\Bokunorecipe\Indexer\RecipeIndexer;
+defined('TYPO3') || die();
 
-$GLOBALS["TCA"]["tx_kesearch_indexerconfig"]["columns"]["sysfolder"][
-  "displayCond"
-] .= "," . RecipeIndexer::KEY;
+use BokuNo\Bokunorecipe\Configuration\KeSearchConfiguration;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
+if (ExtensionManagementUtility::isLoaded('ke_search')) {
+    $GLOBALS['TCA'] = KeSearchConfiguration::extendIndexerConfigurationTca($GLOBALS['TCA']);
+}

@@ -154,7 +154,7 @@ class RecipeRepository extends Repository
         $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
         return $dataMapper->map(
             Category::class,
-            $queryBuilder->execute()->fetchAllAssociative()
+            $queryBuilder->executeQuery()->fetchAllAssociative()
         );
     }
 }

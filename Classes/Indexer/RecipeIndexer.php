@@ -79,7 +79,7 @@ class RecipeIndexer extends IndexerBase
 
             // Loop through the records and write them to the index.
             $counter = 0;
-            while ($record = $items->fetch()) {
+            while ($record = $items->fetchAssociative()) {
                 // Compile the information, which should go into the index.
                 // The field names depend on the table you want to index!
                 $title = strip_tags($record["title"]);
