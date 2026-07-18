@@ -115,6 +115,10 @@
 				<source>Search recipes</source>
 				<target>Rezepte suchen</target>
 			</trans-unit>
+			<trans-unit id="tx_bokunorecipe_bokunoingredients.filter.categories" resname="tx_bokunorecipe_bokunoingredients.filter.categories">
+				<source>Filter by category</source>
+				<target>Nach Kategorie filtern</target>
+			</trans-unit>
 			<trans-unit id="tx_bokunorecipe_bokunoingredients.helpme" resname="tx_bokunorecipe_bokunoingredients.helpme">
 				<target>Hilf mir!!</target>
 			</trans-unit>
@@ -136,6 +140,18 @@
 			<trans-unit id="ingredients" resname="ingredients">
 				<source>Ingredients</source>
 				<target>Zutaten</target>
+			</trans-unit>
+			<trans-unit id="portions" resname="portions">
+				<source>Servings</source>
+				<target>Portionen</target>
+			</trans-unit>
+			<trans-unit id="portions.decrease" resname="portions.decrease">
+				<source>Decrease servings</source>
+				<target>Portionen verringern</target>
+			</trans-unit>
+			<trans-unit id="portions.increase" resname="portions.increase">
+				<source>Increase servings</source>
+				<target>Portionen erhöhen</target>
 			</trans-unit>
 		</body>
 	</file>

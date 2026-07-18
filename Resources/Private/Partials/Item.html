@@ -5,6 +5,15 @@
 >
     <div class="col">
         <div class="card">
+            <f:link.action
+                action="show"
+                pageUid="{settings.detailPid}"
+                title="{recipe.title}"
+                arguments="{recipe:recipe}"
+                class="stretched-link"
+            >
+                <span class="visually-hidden">{recipe.title}</span>
+            </f:link.action>
             <f:if condition="{recipe.images.0.originalResource.type} == 2">
                 <f:variable name="mediaElement">{recipe.images.0}</f:variable>
                 <f:image
@@ -63,8 +72,7 @@
                         </f:else>
                     </f:if>
                 </p>
-                <f:if condition="1=0">
-                    <!-- first category -->
+                <f:if condition="{recipe.categories}">
                     <p class="card-body__category">
                         <f:for each="{recipe.categories}" as="category" iteration="i">
                             <span class="badge">{category.title}</span>

@@ -183,6 +183,9 @@
 			<trans-unit id="tx_bokunorecipe_bokunoingredients.reset" resname="tx_bokunorecipe_bokunoingredients.reset">
 				<source>Reset</source>
 			</trans-unit>
+			<trans-unit id="tx_bokunorecipe_bokunoingredients.filter.categories" resname="tx_bokunorecipe_bokunoingredients.filter.categories">
+				<source>Filter by category</source>
+			</trans-unit>
 			<trans-unit id="tx_bokunorecipe_bokunoingredients.helpme" resname="tx_bokunorecipe_bokunoingredients.helpme">
 				<source>Help me!!</source>
 			</trans-unit>
@@ -200,6 +203,15 @@
 			</trans-unit>
 			<trans-unit id="ingredients" resname="ingredients">
 				<source>Ingredients</source>
+			</trans-unit>
+			<trans-unit id="portions" resname="portions">
+				<source>Servings</source>
+			</trans-unit>
+			<trans-unit id="portions.decrease" resname="portions.decrease">
+				<source>Decrease servings</source>
+			</trans-unit>
+			<trans-unit id="portions.increase" resname="portions.increase">
+				<source>Increase servings</source>
 			</trans-unit>
 		</body>
 	</file>

@@ -33,3 +33,10 @@ page {
     bokunorecipe = EXT:bokunorecipe/Resources/Public/JavaScript/main.js
   }
 }
+
+config.pageTitleProviders {
+  bokunorecipe {
+    provider = BokuNo\Bokunorecipe\Seo\RecipeTitleProvider
+    before = record,seo
+  }
+}

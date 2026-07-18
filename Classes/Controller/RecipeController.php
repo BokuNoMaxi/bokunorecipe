@@ -10,8 +10,10 @@ use BokuNo\Bokunorecipe\Domain\Repository\RecipeRepository;
 use BokuNo\Bokunorecipe\Domain\Repository\CategoryRepository;
 use Psr\Http\Message\ResponseInterface;
 use BokuNo\Bokunorecipe\Domain\Model\Recipe;
+use BokuNo\Bokunorecipe\Seo\RecipeTitleProvider;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This file is part of the "BokuNoRecipe" Extension for TYPO3 CMS.
@@ -73,6 +75,7 @@ class RecipeController extends ActionController
      */
     public function showAction(Recipe $recipe): ResponseInterface
     {
+        GeneralUtility::makeInstance(RecipeTitleProvider::class)->setTitle($recipe->getTitle());
         $this->view->assign("recipe", $recipe);
         return $this->htmlResponse();
     }

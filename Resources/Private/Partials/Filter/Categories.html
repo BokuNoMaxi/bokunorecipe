@@ -1,22 +1,52 @@
-<div class="d-flex flex-wrap" role="toolbar">
-    <f:for each="{categories}" as="category" iteration="i">
-        <div class="m-1" role="group">
-            <f:variable name="checked"
-                ><f:spaceless>
-                    <f:for each="{selCategories}" as="fcategory" iteration="i">
-                        <f:if condition="{fcategory} == {category.uid}">checked</f:if>
-                    </f:for>
-                </f:spaceless></f:variable
+<f:if condition="{categories}">
+    <f:variable name="selectedCount">{selCategories -> f:count()}</f:variable>
+    <div class="accordion bokunorecipe__list__category-filter" id="bkr-category-filter">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="bkr-category-filter-heading">
+                <button
+                    class="accordion-button{f:if(condition: selectedCount, else: ' collapsed')}"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#bkr-category-filter-collapse"
+                    aria-expanded="{f:if(condition: selectedCount, then: 'true', else: 'false')}"
+                    aria-controls="bkr-category-filter-collapse"
+                >
+                    <f:translate key="tx_bokunorecipe_bokunoingredients.filter.categories" />
+                    <f:if condition="{selectedCount} > 0">
+                        <span class="badge">{selectedCount}</span>
+                    </f:if>
+                </button>
+            </h2>
+            <div
+                id="bkr-category-filter-collapse"
+                class="accordion-collapse collapse{f:if(condition: selectedCount, then: ' show')}"
+                aria-labelledby="bkr-category-filter-heading"
             >
-            <f:form.checkbox
-                class="btn-check"
-                id="btn-{category.slug}"
-                name="category[]"
-                value="{category.uid}"
-                additionalAttributes="{autocomplete:'off'}"
-                checked="{checked}"
-            />
-            <label class="btn btn-primary" for="btn-{category.slug}">{category.title}</label>
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap bokunorecipe__list__category-filter-options" role="toolbar">
+                        <f:for each="{categories}" as="category" iteration="i">
+                            <div class="m-1" role="group">
+                                <f:variable name="checked"
+                                    ><f:spaceless>
+                                        <f:for each="{selCategories}" as="fcategory" iteration="i">
+                                            <f:if condition="{fcategory} == {category.uid}">checked</f:if>
+                                        </f:for>
+                                    </f:spaceless></f:variable
+                                >
+                                <f:form.checkbox
+                                    class="btn-check"
+                                    id="btn-{category.slug}"
+                                    name="category[]"
+                                    value="{category.uid}"
+                                    additionalAttributes="{autocomplete:'off'}"
+                                    checked="{checked}"
+                                />
+                                <label class="btn btn-primary" for="btn-{category.slug}">{category.title}</label>
+                            </div>
+                        </f:for>
+                    </div>
+                </div>
+            </div>
         </div>
-    </f:for>
-</div>
+    </div>
+</f:if>
